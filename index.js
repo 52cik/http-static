@@ -29,11 +29,8 @@ const mimeTypes = {
 const app = http.createServer((req, res) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     // method not allowed
-    res.statusCode = 405;
-    res.setHeader('Allow', 'GET, HEAD');
-    res.setHeader('Content-Length', '0');
-    res.end();
-    return;
+    res.writeHead(405, 'Method Not Allowed', {'Allow': 'GET, HEAD', 'Content-Length': '0'});
+    return res.end();
   }
 
   sendFile(req, res, url.parse(req.url).pathname);
@@ -45,8 +42,7 @@ function sendFile(req, res, pathname) {
   fs.exists(filename, exists => {
     if (!exists) {
       res.writeHead(404, 'Not Found', {'Content-Type': 'text/plain'});
-      res.end('404 Not Found\n');
-      return;
+      return res.end('404 Not Found\n');
     }
 
     let ext = path.extname(pathname);
