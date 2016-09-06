@@ -13,6 +13,9 @@
   "keywords": [],
   "author": "楼教主 <fe.52cik@gmail.com> (http://www.52cik.com/)",
   "license": "MIT",
+  "engines": {
+    "node": ">= 4.0.0"
+  },
   "bugs": {
     "url": "https://github.com/52cik/http-static/issues"
   },
