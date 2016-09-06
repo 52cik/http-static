@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "A simple static file http server.",
   "main": "index.js",
+  "bin": {
+    "http-static": "bin/index"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
