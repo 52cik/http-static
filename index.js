@@ -9,6 +9,7 @@ const fs = require('fs');
 const PORT = process.env.PORT || process.argv[3] || 3000;
 const baseDir = path.resolve(process.argv[2] || '.');
 
+const maxAge = 60 * 60 * 24 * 365; // 1 year
 const gzipTypes = /(?:html|css|js|xml)/ig;
 const mimeTypes = {
   '.htm': 'text/html',
@@ -52,7 +53,21 @@ function sendFile(req, res, pathname) {
     fs.stat(filename, function(err, stat) {
       if (stat.isDirectory()) {
         return sendFile(req, res, 'index.html');
-      };
+      }
+
+      var lastModified = stat.mtime.toUTCString();
+      res.setHeader('Last-Modified', lastModified);
+
+      let expires = new Date();
+      expires.setTime(expires.getTime() + maxAge * 1000);
+      res.setHeader('Expires', expires.toUTCString());
+      res.setHeader('Cache-Control', 'max-age=' + maxAge);
+
+      let ifModifiedSince = req.headers['if-modified-since'];
+      if (ifModifiedSince && lastModified == ifModifiedSince) {
+        res.statusCode = 304;
+        return res.end();
+      }
 
       let raw = fs.createReadStream(filename);
       let acceptEncoding = req.headers['accept-encoding'] || '';
