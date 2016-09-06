@@ -6,7 +6,11 @@
 ## 使用方法 (How to use it)
 
 ``` sh
-$ node index.js static_dir 8000
+$ npm install -g 52cik/serve-static
+```
+
+``` sh
+$ serve-static static_dir 8000
 ```
 
 `cn:` 以 static_dir 为跟目录，8000 为端口启动服务器。  
