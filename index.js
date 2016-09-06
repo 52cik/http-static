@@ -87,4 +87,6 @@ function sendFile(req, res, pathname) {
   });
 }
 
-app.listen(PORT);
+app.listen(PORT, _ => {
+  console.log(`Server running at http://localhost:${PORT}/`);
+});
