@@ -37,4 +37,4 @@ $ serve-static static_dir 8000
 [dependencies-image]: https://img.shields.io/david/52cik/http-static.svg?style=flat
 
 [node-url]: https://nodejs.org
-[node-image]: https://img.shields.io/node/v/gh-badges.svg
+[node-image]: https://img.shields.io/badge/node-%3E%3D%204.0.0-brightgreen.svg
