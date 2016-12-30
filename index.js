@@ -28,6 +28,8 @@ const mimeTypes = {
 };
 
 const app = http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // CORS
+
   if (req.method !== 'GET' && req.method !== 'HEAD') { // method not allowed
     res.writeHead(405, 'Method Not Allowed', {'Allow': 'GET, HEAD', 'Content-Length': 0});
     return res.end();
