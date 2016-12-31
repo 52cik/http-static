@@ -24,7 +24,11 @@ const mimeTypes = {
   '.jpeg': 'image/jpeg',
   '.jpg': 'image/jpeg',
   '.png': 'image/png',
-  '.gif': 'image/gif'
+  '.gif': 'image/gif',
+  '.ttf': 'application/x-font-ttf',
+  '.woff': 'application/font-woff',
+  '.woff2': 'application/font-woff2',
+  '.eot': 'application/vnd.ms-fontobject',
 };
 
 const app = http.createServer((req, res) => {
@@ -46,8 +50,8 @@ function sendFile(req, res, pathname) {
 
   fs.exists(filename, exists => {
     if (!exists) {
-      res.writeHead(404, 'Not Found', {'Content-Type': 'text/plain'});
-      return res.end('404 Not Found\n');
+      res.writeHead(404, 'Not Found');
+      return res.end();
     }
 
     let ext = path.extname(pathname);
