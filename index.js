@@ -1,13 +1,9 @@
 'use strict';
 
-const http = require('http');
+const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 const url = require('url');
-const fs = require('fs');
-
-const baseDir = process.env.DIR || path.resolve(process.argv[2] || '.');
-const PORT = process.env.PORT || process.argv[3] || 3000;
 
 const maxAge = 60 * 60 * 24 * 365; // 1 year
 const gzipTypes = /(?:html|css|js|xml)/ig;
@@ -31,22 +27,45 @@ const mimeTypes = {
   '.eot': 'application/vnd.ms-fontobject',
 };
 
-const app = http.createServer((req, res) => {
+var BASEDIR = '.';
+
+/**
+ * Expose http static
+ *
+ * @param {String} baseDir
+ * @returns {httpStatic}
+ */
+module.exports = function (baseDir) {
+  BASEDIR = baseDir;
+  return httpStatic;
+};
+
+/**
+ * Static server
+ *
+ * @param {IncomingMessage} req
+ * @param {ServerResponse} res
+ */
+function httpStatic(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*'); // CORS
 
   if (req.method !== 'GET' && req.method !== 'HEAD') { // method not allowed
-    res.writeHead(405, 'Method Not Allowed', {'Allow': 'GET, HEAD', 'Content-Length': 0});
+    res.writeHead(405, 'Method Not Allowed', { 'Allow': 'GET, HEAD', 'Content-Length': 0 });
     return res.end();
   }
 
   sendFile(req, res, url.parse(req.url).pathname);
-});
+}
 
 /**
  * Send file
+ *
+ * @param {IncomingMessage} req
+ * @param {ServerResponse} res
+ * @param {String} pathname
  */
 function sendFile(req, res, pathname) {
-  let filename = path.join(baseDir, unescape(pathname));
+  let filename = path.join(BASEDIR, unescape(pathname));
 
   fs.exists(filename, exists => {
     if (!exists) {
@@ -58,7 +77,7 @@ function sendFile(req, res, pathname) {
     let contentType = mimeTypes[ext] || 'text/plain';
     res.setHeader('Content-Type', contentType);
 
-    fs.stat(filename, function(err, stat) {
+    fs.stat(filename, function (err, stat) {
       if (stat.isDirectory()) {
         return sendFile(req, res, path.join(pathname, 'index.html'));
       }
@@ -82,10 +101,10 @@ function sendFile(req, res, pathname) {
       let matched = ext.match(gzipTypes);
 
       if (matched && acceptEncoding.match(/\bgzip\b/)) {
-        res.writeHead(200, 'OK', {'Content-Encoding': 'gzip'});
+        res.writeHead(200, 'OK', { 'Content-Encoding': 'gzip' });
         raw.pipe(zlib.createGzip()).pipe(res);
       } else if (matched && acceptEncoding.match(/\bdeflate\b/)) {
-        res.writeHead(200, 'OK', {'Content-Encoding': 'deflate'});
+        res.writeHead(200, 'OK', { 'Content-Encoding': 'deflate' });
         raw.pipe(zlib.createDeflate()).pipe(res);
       } else {
         res.writeHead(200, 'OK');
@@ -93,53 +112,4 @@ function sendFile(req, res, pathname) {
       }
     });
   });
-}
-
-app.on('error', onError);
-app.on('listening', onListening);
-
-module.exports.app = app;
-
-module.exports.listen = _ => {
-  app.listen(PORT, '0.0.0.0');
-};
-
-
-/**
- * Event listener for HTTP server "error" event.
- */
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  let bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-function onListening() {
-  let addr = app.address();
-  let bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-
-  console.log(`Server listening on ${bind}`);
 }

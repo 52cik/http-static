@@ -1,10 +1,10 @@
 {
   "name": "http-static",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple static file http server.",
   "main": "index.js",
   "bin": {
-    "http-static": "bin/index"
+    "http-static": "bin/static"
   },
   "scripts": {
     "test": "mocha --check-leaks --reporter spec --bail",
