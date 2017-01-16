@@ -12,7 +12,7 @@
 ## 使用方法 (How to use it)
 
 ``` sh
-$ npm install -g 52cik/serve-static
+$ npm install -g 52cik/http-static
 ```
 
 ``` sh
