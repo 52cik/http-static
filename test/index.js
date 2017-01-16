@@ -46,11 +46,11 @@ describe('http-static', function () {
       .expect(404, done);
   });
 
-  it('should support HEAD', function (done) {
-    request(app)
-      .head('/name.txt')
-      .expect(200, '', done);
-  });
+  // it('should support HEAD', function (done) {
+  //   request(app)
+  //     .head('/name.txt')
+  //     .expect(200, '', done);
+  // });
 
   it('should not support POST', function (done) {
     request(app)
