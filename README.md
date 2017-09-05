@@ -19,7 +19,7 @@ $ npm install -g 52cik/http-static
 $ http-static static_dir 8000
 ```
 
-`cn:` 以 static_dir 为跟目录，8000 为端口启动服务器。  
+`cn:` 以 static_dir 为根目录，8000 为端口启动服务器。  
 `en:` With static_dir as the directory, 8000 for the port to start the server.
 
 
